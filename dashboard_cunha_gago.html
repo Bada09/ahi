@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard LAVAÍ — Cunha Gago</title>
+<title>Dashboard LAVAÍ & AHI — Cunha Gago</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <style>
@@ -175,11 +175,11 @@ header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
 .perf-item-dry .perf-bar-fill{background:var(--teal)}
 
 /* ── Bandeiras list ─────────────────────────────── */
-.bandeiras-list{display:flex;flex-direction:column;gap:7px}
-.band-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.bandeiras-list{display:flex;flex-direction:column;gap:7px;min-width:0}
+.band-item{display:flex;align-items:center;gap:8px;font-size:12px;min-width:0}
 .band-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.band-name{color:var(--text);flex:1}
-.band-val{color:var(--text-muted);font-family:var(--font-mono);font-size:11px}
+.band-name{color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.band-val{color:var(--text-muted);font-family:var(--font-mono);font-size:11px;flex-shrink:0}
 
 /* ── Table ──────────────────────────────────────── */
 .table-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -384,10 +384,10 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
         <h2><i class="fas fa-credit-card"></i> Divisão de Pagamento</h2>
         <span style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase">TEF vs PIX</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
-        <div id="chart-payment-methods"></div>
-        <div>
-          <div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-weight:700">Bandeiras</div>
+      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+        <div id="chart-payment-methods" style="width:100%"></div>
+        <div style="min-width:0">
+          <div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-weight:700">Bandeiras</div>
           <div class="bandeiras-list" id="bandeiras-list"></div>
         </div>
       </div>
