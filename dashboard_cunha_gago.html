@@ -455,7 +455,7 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
 const CSV_URL_ORIGINAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ6-Y8FO-Zspn95dDGPARIHVexMJ5foVWU4vsIuq_OdpAr0k6JY2OwrS2VNfygSkJ6dT1aXaPx6uuq/pub?gid=40793617&single=true&output=csv';
 
 // ► Cole aqui a URL do Apps Script após publicar (instrução abaixo)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzm3-K1TES5_upEGxw3wMQ2NLRqSX8Khe7R3qpJcutAZbvCQpLTGK8Pe5v3AEC1z_qc/exec';
+const APPS_SCRIPT_URL = '';
 
 const MACHINE_NAME = '40# AHI - Cunha Gago';
 
@@ -464,17 +464,18 @@ const DET_ML_PER_WASH = 30;
 const AMA_ML_PER_WASH = 20;
 const TANK_CAPACITY_L = 20;
 
-// 7727 = Lavadora | 17381 = Secadora (via Nº Lógico col 13 ou Matrícula col 21)
+// 7727 = Lavadora | 17381 = Secadora
+// Valores reais no CSV: "7727 - LAVA - 1" e "17381 - SECA - 1"
 const WASH_ID = '7727';
 const DRY_ID  = '17381';
 
 function isMaqWash(r){
   const nl=(r[C.nlogico]||'').trim(), mt=(r[C.matricula]||'').trim();
-  return nl===WASH_ID || mt===WASH_ID;
+  return nl.includes(WASH_ID) || mt.includes(WASH_ID);
 }
 function isMaqDry(r){
   const nl=(r[C.nlogico]||'').trim(), mt=(r[C.matricula]||'').trim();
-  return nl===DRY_ID || mt===DRY_ID;
+  return nl.includes(DRY_ID) || mt.includes(DRY_ID);
 }
 
 // Formata M/D/YYYY → DD/MM/YYYY
