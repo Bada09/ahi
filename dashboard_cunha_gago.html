@@ -464,18 +464,16 @@ const DET_ML_PER_WASH = 30;
 const AMA_ML_PER_WASH = 20;
 const TANK_CAPACITY_L = 20;
 
-// 7727 = Lavadora | 17381 = Secadora
-// Valores reais no CSV: "7727 - LAVA - 1" e "17381 - SECA - 1"
+// 7727 = Lavadora ("7727 - LAVA - 1") | 17381 = Secadora ("17381 - SECA - 1")
+// Varre todas as colunas da linha para encontrar o identificador
 const WASH_ID = '7727';
 const DRY_ID  = '17381';
 
 function isMaqWash(r){
-  const nl=(r[C.nlogico]||'').trim(), mt=(r[C.matricula]||'').trim();
-  return nl.includes(WASH_ID) || mt.includes(WASH_ID);
+  return r.some(v => (v||'').includes(WASH_ID));
 }
 function isMaqDry(r){
-  const nl=(r[C.nlogico]||'').trim(), mt=(r[C.matricula]||'').trim();
-  return nl.includes(DRY_ID) || mt.includes(DRY_ID);
+  return r.some(v => (v||'').includes(DRY_ID));
 }
 
 // Formata M/D/YYYY → DD/MM/YYYY
