@@ -451,8 +451,8 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
 // CONFIG
 // ══════════════════════════════════════════════════════
 const CSV_URL_ORIGINAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ6-Y8FO-Zspn95dDGPARIHVexMJ5foVWU4vsIuq_OdpAr0k6JY2OwrS2VNfygSkJ6dT1aXaPx6uuq/pub?gid=40793617&single=true&output=csv';
-// Proxy público — funciona no GitHub Pages sem servidor
-const CSV_URL = 'https://corsproxy.io/?' + encodeURIComponent(CSV_URL_ORIGINAL);
+// Proxy público via allorigins — sem limite de tamanho de URL
+const CSV_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(CSV_URL_ORIGINAL);
 const MACHINE_NAME = '40# AHI - Cunha Gago';
 
 // Insumos: ml consumido por ciclo de lavagem
@@ -510,22 +510,42 @@ function parseDate(s){
 function fmtBRL(n){return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
 function fmtN(n,d=2){return n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});}
 
+async function fetchWithFallback(){
+  const RAW = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ6-Y8FO-Zspn95dDGPARIHVexMJ5foVWU4vsIuq_OdpAr0k6JY2OwrS2VNfygSkJ6dT1aXaPx6uuq/pub?gid=40793617&single=true&output=csv';
+  const enc = encodeURIComponent(RAW);
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${enc}`,
+    `https://corsproxy.io/?${enc}`,
+    `https://api.codetabs.com/v1/proxy?quest=${enc}`,
+    RAW, // tenta direto por último
+  ];
+  for(const url of proxies){
+    try{
+      const res = await fetch(url + (url.includes('?') ? '&' : '?') + '_nc=' + Date.now());
+      if(res.ok){
+        const txt = await res.text();
+        if(txt.includes(',')) return txt; // CSV válido
+      }
+    }catch(e){ /* tenta próximo */ }
+  }
+  throw new Error('Todos os proxies falharam. Verifique se a planilha está publicada como CSV.');
+}
+
 async function loadData(){
   try{
-    const res=await fetch(CSV_URL + '&nocache=' + Date.now());
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const txt=await res.text();
-    const rows=parseCSV(txt);
-    // Filter to this machine only
-    allRows=rows.filter(r=>r.length>10 && r[C.maquina]===MACHINE_NAME);
+    const txt = await fetchWithFallback();
+    const rows = parseCSV(txt);
+    allRows = rows.filter(r=>r.length>10 && r[C.maquina]===MACHINE_NAME);
     buildMonthSelect();
     applyFilter();
     document.getElementById('loader').classList.add('hidden');
   }catch(e){
-    document.getElementById('loader').innerHTML=`<div style="color:#ef4444;font-size:14px;text-align:center;padding:20px">
-      <i class="fas fa-triangle-exclamation" style="font-size:32px;margin-bottom:12px;display:block"></i>
-      Erro ao carregar dados: ${e.message}<br><br>
-      <small>Verifique se o servidor HTTP está ativo (<code>python -m http.server 8080</code>)</small></div>`;
+    document.getElementById('loader').innerHTML=`<div style="color:#ef4444;font-size:14px;text-align:center;padding:40px 20px">
+      <i class="fas fa-triangle-exclamation" style="font-size:36px;margin-bottom:16px;display:block"></i>
+      <strong>Erro ao carregar dados</strong><br><br>
+      <span style="font-size:12px;color:#64748b">${e.message}</span><br><br>
+      <span style="font-size:12px;color:#64748b">Certifique-se de que a planilha está publicada:<br>
+      <strong>Arquivo → Compartilhar → Publicar na web → CSV</strong></span></div>`;
   }
 }
 
