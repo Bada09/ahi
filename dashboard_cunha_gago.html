@@ -460,32 +460,13 @@ const DET_ML_PER_WASH = 30;   // detergente
 const AMA_ML_PER_WASH = 20;   // amaciante
 const TANK_CAPACITY_L = 20;
 
-// 7727 = Lavadora | 17381 = Secadora — identificados via Nº Lógico ou Matrícula
-const WASH_ID = '7727';
-const DRY_ID  = '17381';
-
-function isMaqWash(r){
-  // Checa Nº Lógico (col 13) e Matrícula (col 21)
-  const nl = (r[C.nlogico]||'').trim();
-  const mt = (r[C.matricula]||'').trim();
-  return nl===WASH_ID || mt===WASH_ID;
-}
-function isMaqDry(r){
-  const nl = (r[C.nlogico]||'').trim();
-  const mt = (r[C.matricula]||'').trim();
-  return nl===DRY_ID || mt===DRY_ID;
-}
-
-// Formata data de M/D/YYYY para DD/MM/YYYY
-function fmtDate(s){
-  if(!s) return '–';
-  const p=s.split('/');
-  if(p.length===3) return `${String(p[1]).padStart(2,'0')}/${String(p[0]).padStart(2,'0')}/${p[2]}`;
-  return s;
-}
+// Produtos que identificam lavagem vs secagem (col Produtos = índice 5)
+// 7727 = Lavadora | 17381 = Secadora
+const WASH_PRODUCTS = ['7000','7004','7009','7038','7727'];
+const DRY_PRODUCTS  = ['7001','7003','7005','8871','8872','17381'];
 
 // col indices
-const C = {maquina:1,pagamento:4,produto:5,total:9,data:11,hora:12,tipo:16,rede:17,bandeira:18,auth:15,nlogico:13,matricula:21};
+const C = {maquina:1,pagamento:4,produto:5,total:9,data:11,hora:12,tipo:16,rede:17,bandeira:18,auth:15};
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -657,8 +638,8 @@ function renderAll(){
 // ══════════════════════════════════════════════════════
 function renderKPIs(){
   const total=filtered.reduce((s,r)=>s+toNum(r[C.total]),0);
-  const washCycles=filtered.filter(r=>isMaqWash(r)).length;
-  const dryCycles =filtered.filter(r=>isMaqDry(r)).length;
+  const washCycles=filtered.filter(r=>WASH_PRODUCTS.some(p=>r[C.produto]===p)).length;
+  const dryCycles =filtered.filter(r=>!WASH_PRODUCTS.some(p=>r[C.produto]===p)).length;
 
   document.getElementById('kpi-revenue-val').textContent=fmtBRL(total);
   document.getElementById('kpi-wash-val').textContent=washCycles.toLocaleString('pt-BR');
@@ -694,9 +675,9 @@ function renderInsights(){
   dayArr.sort((a,b)=>b[1].total-a[1].total);
   const busiest=dayArr[0], quietest=dayArr[dayArr.length-1];
   const bDate=busiest[1].date, qDate=quietest[1].date;
-  document.getElementById('kpi-busiest-day-val').textContent=bDate?`${String(bDate.getDate()).padStart(2,'0')}/${String(bDate.getMonth()+1).padStart(2,'0')}`:'--';
+  document.getElementById('kpi-busiest-day-val').textContent=bDate?`${bDate.getDate()}/${bDate.getMonth()+1}`:'--';
   document.getElementById('kpi-busiest-day-sub').textContent=`${fmtBRL(busiest[1].total)} · ${busiest[1].count} transações`;
-  document.getElementById('kpi-quietest-day-val').textContent=qDate?`${String(qDate.getDate()).padStart(2,'0')}/${String(qDate.getMonth()+1).padStart(2,'0')}`:'--';
+  document.getElementById('kpi-quietest-day-val').textContent=qDate?`${qDate.getDate()}/${qDate.getMonth()+1}`:'--';
   document.getElementById('kpi-quietest-day-sub').textContent=`${fmtBRL(quietest[1].total)} · ${quietest[1].count} transações`;
 
   // by hour
@@ -730,13 +711,13 @@ function renderChartCycles(){
   filtered.forEach(r=>{
     const d=r[C.data]; if(!d) return;
     if(!byDay[d]) byDay[d]={wash:0,dry:0};
-    if(isMaqWash(r)) byDay[d].wash++;
+    if(WASH_PRODUCTS.some(p=>r[C.produto]===p)) byDay[d].wash++;
     else byDay[d].dry++;
   });
   const days=Object.keys(byDay).sort((a,b)=>{const da=parseDate(a),db=parseDate(b);return da-db;});
   const washData=days.map(d=>byDay[d].wash);
   const dryData =days.map(d=>byDay[d].dry);
-  const labels  =days.map(d=>{const p=parseDate(d);return p?`${String(p.getDate()).padStart(2,'0')}/${String(p.getMonth()+1).padStart(2,'0')}`:d;});
+  const labels  =days.map(d=>{const p=parseDate(d);return p?`${p.getDate()}/${p.getMonth()+1}`:d;});
   const total=washData.reduce((s,v)=>s+v,0)+dryData.reduce((s,v)=>s+v,0);
   const avg=days.length?(total/days.length).toFixed(1):0;
   document.getElementById('average-cycles-badge').textContent=`Média: ${avg} ciclos/dia`;
@@ -831,7 +812,7 @@ function renderChartPayment(){
 // RESERVOIRS
 // ══════════════════════════════════════════════════════
 function renderReservoirs(){
-  const washCycles=filtered.filter(r=>isMaqWash(r)).length;
+  const washCycles=filtered.filter(r=>WASH_PRODUCTS.some(p=>r[C.produto]===p)).length;
   const detConsumed=washCycles*DET_ML_PER_WASH/1000;
   const amaConsumed=washCycles*AMA_ML_PER_WASH/1000;
   const detLeft=Math.max(0,TANK_CAPACITY_L-detConsumed);
@@ -862,7 +843,7 @@ function renderOccupancy(){
   filtered.forEach(r=>{
     const d=r[C.data]; if(!d) return;
     if(!byDay[d]) byDay[d]={wash:0,dry:0};
-    if(isMaqWash(r)) byDay[d].wash++;
+    if(WASH_PRODUCTS.some(p=>r[C.produto]===p)) byDay[d].wash++;
     else byDay[d].dry++;
   });
   const days=Object.keys(byDay);
@@ -909,7 +890,7 @@ function paintTable(){
   if(tablePage>=pages) tablePage=pages-1;
   const pageRows=tableRows.slice(tablePage*TABLE_PS,(tablePage+1)*TABLE_PS);
 
-  const isWash=r=>isMaqWash(r);
+  const isWash=r=>WASH_PRODUCTS.some(p=>r[C.produto]===p);
   const tipoBadge=t=>{
     if(!t) return '';
     const l=t.toLowerCase();
@@ -919,7 +900,7 @@ function paintTable(){
   };
 
   document.getElementById('tbody-transactions').innerHTML=pageRows.map(r=>`<tr>
-    <td>${fmtDate(r[C.data])} ${r[C.hora]||''}</td>
+    <td>${r[C.data]||'–'} ${r[C.hora]||''}</td>
     <td>${isWash(r)?'<span class="badge badge-wash">🫧 Lavagem</span>':'<span class="badge badge-dry">💨 Secagem</span>'}</td>
     <td>${tipoBadge(r[C.tipo])}</td>
     <td>${r[C.bandeira]||(r[C.tipo]==='Pix'?'PIX':'–')}</td>
