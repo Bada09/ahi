@@ -510,25 +510,19 @@ function parseDate(s){
 function fmtBRL(n){return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
 function fmtN(n,d=2){return n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});}
 
+// ── URL do Google Apps Script (sua API própria) ──────
+// Instruções: veja o arquivo LEIA-ME-APPS-SCRIPT.txt
+const APPS_SCRIPT_URL = ''; // Cole aqui a URL do seu Apps Script após publicar
+
 async function fetchWithFallback(){
-  const RAW = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ6-Y8FO-Zspn95dDGPARIHVexMJ5foVWU4vsIuq_OdpAr0k6JY2OwrS2VNfygSkJ6dT1aXaPx6uuq/pub?gid=40793617&single=true&output=csv';
-  const enc = encodeURIComponent(RAW);
-  const proxies = [
-    `https://api.allorigins.win/raw?url=${enc}`,
-    `https://corsproxy.io/?${enc}`,
-    `https://api.codetabs.com/v1/proxy?quest=${enc}`,
-    RAW, // tenta direto por último
-  ];
-  for(const url of proxies){
-    try{
-      const res = await fetch(url + (url.includes('?') ? '&' : '?') + '_nc=' + Date.now());
-      if(res.ok){
-        const txt = await res.text();
-        if(txt.includes(',')) return txt; // CSV válido
-      }
-    }catch(e){ /* tenta próximo */ }
+  if(!APPS_SCRIPT_URL){
+    throw new Error('Configure o APPS_SCRIPT_URL no arquivo HTML. Veja as instruções.');
   }
-  throw new Error('Todos os proxies falharam. Verifique se a planilha está publicada como CSV.');
+  const res = await fetch(APPS_SCRIPT_URL + '?nocache=' + Date.now());
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const txt = await res.text();
+  if(!txt.includes(',')) throw new Error('Resposta inválida — verifique o Apps Script.');
+  return txt;
 }
 
 async function loadData(){
