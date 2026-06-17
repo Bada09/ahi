@@ -371,41 +371,13 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
   </div>
 
   <!-- CHARTS ROW 2 -->
-  <div class="charts-grid-row">
+  <div style="margin-bottom:16px">
     <div class="card-panel">
       <div class="card-header">
         <h2><i class="fas fa-clock"></i> Horários de Pico (Peak Times)</h2>
         <span style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase">Distribuição por Hora</span>
       </div>
       <div id="chart-peak-times"></div>
-    </div>
-    <div class="card-panel">
-      <div class="card-header">
-        <h2><i class="fas fa-credit-card"></i> Divisão de Pagamento</h2>
-        <span style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase">TEF vs PIX</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-        <div id="chart-payment-methods" style="width:100%"></div>
-        <div style="min-width:0">
-          <div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-weight:700">Bandeiras</div>
-          <div class="bandeiras-list" id="bandeiras-list"></div>
-        </div>
-      </div>
-      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
-        <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:12px">Taxa de Ocupação Real</div>
-        <div class="perf-grid">
-          <div class="perf-item perf-item-wash">
-            <div class="perf-info"><span class="perf-title">Lavadora (30 min · Máx: 16/dia)</span><span class="perf-percent" id="occ-wash-pct">0%</span></div>
-            <div class="perf-bar-bg"><div class="perf-bar-fill" id="occ-wash-fill" style="--perf-fill:0%;width:0%"></div></div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="occ-wash-detail">0 lavagens</div>
-          </div>
-          <div class="perf-item perf-item-dry">
-            <div class="perf-info"><span class="perf-title">Secadora (45 min · Máx: 14/dia)</span><span class="perf-percent" id="occ-dry-pct">0%</span></div>
-            <div class="perf-bar-bg"><div class="perf-bar-fill" id="occ-dry-fill" style="--perf-fill:0%;width:0%"></div></div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="occ-dry-detail">0 secagens</div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
