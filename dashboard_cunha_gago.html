@@ -1,418 +1,222 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard LAVAí - Cunha Gago</title>
-    <meta name="description" content="Dashboard interativo para análise de desempenho, faturamento projetado e monitoramento de insumos das máquinas de lavagem e secagem da lavanderia Cunha Gago.">
-    
-    <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- FontAwesome for Premium Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAVAí · Acesso Condô</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--cyan:#2563eb;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--sans)}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8f9fc;position:relative}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(to right,#1d4ed8,transparent 50px) left/50px 100% no-repeat,
+    linear-gradient(to left,#1d4ed8,transparent 50px) right/50px 100% no-repeat,
+    linear-gradient(to bottom,#1d4ed8,transparent 80px) top/100% 80px no-repeat,
+    linear-gradient(to top,#1d4ed8,transparent 50px) bottom/100% 50px no-repeat;
+  opacity:.15}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:40px 36px;
+  width:100%;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,.08);position:relative;z-index:1;
+  animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.logo-mark{width:44px;height:44px;background:linear-gradient(135deg,#2563eb,#0ea5e9);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.logo-text h1{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.logo-text p{font-size:12px;color:var(--muted);margin-top:2px}
+.field{margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.4px;margin-bottom:6px}
+.input-wrap{position:relative}
+.input-wrap i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px}
+.input-wrap .eye{left:auto;right:12px;cursor:pointer;transition:color .15s}
+.input-wrap .eye:hover{color:var(--cyan)}
+input{width:100%;background:#f8f9fc;border:1.5px solid var(--border);border-radius:8px;
+  padding:11px 12px 11px 36px;color:var(--text);font-size:14px;font-family:var(--sans);
+  outline:none;transition:border-color .15s}
+input.has-eye{padding-right:36px}
+input:focus{border-color:var(--cyan);background:#fff}
+input.shake{animation:shake .3s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.btn{width:100%;background:var(--cyan);color:#fff;border:none;padding:12px;border-radius:8px;
+  font-size:14px;font-weight:700;font-family:var(--sans);cursor:pointer;margin-top:4px;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+.btn:hover{background:#1d4ed8}
+.btn:disabled{opacity:.6;cursor:default;pointer-events:none}
+.err{font-size:12px;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;
+  border-radius:7px;padding:10px 12px;margin-top:12px;display:none}
+.err.show{display:block}
+#field-senha{display:none}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);
+  border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-
-    <!-- Premium Loader Overlay -->
-    <div id="loader" class="loader-overlay">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">Carregando painel de controle LAVAí...</div>
+<div class="card">
+  <div class="logo">
+    <div class="logo-mark"><i class="fas fa-soap"></i></div>
+    <div class="logo-text">
+      <h1>LAVAí Condô</h1>
+      <p>Painel de operações · Cunha Gago</p>
     </div>
+  </div>
 
-    <div class="app-container">
-        
-        <!-- Header & Title Bar -->
-        <header>
-            <div class="brand-section">
-                <div class="brand-logo">
-                    <i class="fas fa-soap"></i>
-                </div>
-                <div class="brand-info">
-                    <h1>Dashboard LAVAí</h1>
-                    <div style="display: flex; align-items: center; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
-                        <span style="margin: 0;">Unidade Cunha Gago • Dashboard de Operações</span>
-                        <a href="index.html" style="font-size: 11px; font-weight: 700; color: var(--text-muted); background: rgba(100, 116, 139, 0.1); padding: 4px 10px; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;">
-                            <i class="fas fa-home"></i> Portal de Acesso
-                        </a>
-                        <a href="dashboard_geral.html" style="font-size: 11px; font-weight: 700; color: var(--color-wash); background: rgba(37, 99, 235, 0.1); padding: 4px 10px; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;">
-                            <i class="fas fa-network-wired"></i> Visão Geral (PDVs)
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Dynamic Filters -->
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <label for="filter-month">Mês</label>
-                    <select id="filter-month">
-                        <option value="all">Período Personalizado</option>
-                        <option value="06-2026" selected>Junho 2026</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label for="date-start">De</label>
-                    <input type="date" id="date-start">
-                </div>
-                
-                <div class="filter-group">
-                    <label for="date-end">Até</label>
-                    <input type="date" id="date-end">
-                </div>
-                
-                <div class="quick-ranges">
-                    <button class="btn-range active" id="btn-range-all">Ver Tudo</button>
-                    <button class="btn-range" id="btn-range-15">Últimos 15d</button>
-                    <button class="btn-range" id="btn-range-7">Últimos 7d</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- KPI Cards Grid -->
-        <section class="kpi-grid">
-            
-            <!-- Revenue KPI -->
-            <div class="kpi-card kpi-revenue" id="card-revenue">
-                <div class="kpi-content">
-                    <h3>Valor Total Faturado</h3>
-                    <div class="kpi-value" id="kpi-revenue-val">R$ 0,00</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-arrow-trend-up" style="color: var(--color-revenue);"></i>
-                        <span>Receita real acumulada no período</span>
-                    </div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="fas fa-wallet"></i>
-                </div>
-            </div>
-
-            <!-- Projection KPI -->
-            <div class="kpi-card kpi-projection" id="card-projection">
-                <div class="kpi-content">
-                    <h3>Projeção de Faturamento</h3>
-                    <div class="kpi-value" id="kpi-projection-val">R$ 0,00</div>
-                    <div class="kpi-subtext" id="kpi-projection-sub">
-                        <span>Carregando estimativa...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.1);">
-                    <i class="fas fa-chart-line" style="color: #f59e0b;"></i>
-                </div>
-            </div>
-
-            <!-- Cycles KPI -->
-            <div class="kpi-card kpi-wash" id="card-cycles">
-                <div class="kpi-content">
-                    <h3>Ciclos de Lavagem</h3>
-                    <div class="kpi-value" id="kpi-wash-val">0</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-tint" style="color: var(--color-wash);"></i>
-                        <span id="kpi-wash-sub">Máquina 7727 - LAVA - 1</span>
-                    </div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="fas fa-rotate"></i>
-                </div>
-            </div>
-
-            <!-- Dry Cycles KPI -->
-            <div class="kpi-card kpi-dry" id="card-dry-cycles">
-                <div class="kpi-content">
-                    <h3>Ciclos de Secagem</h3>
-                    <div class="kpi-value" id="kpi-dry-val">0</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-wind" style="color: var(--color-dry);"></i>
-                        <span id="kpi-dry-sub">Máquina 17381 - SECA - 1</span>
-                    </div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="fas fa-wind"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- Peak & Idle Insights Grid -->
-        <section class="kpi-grid" style="margin-bottom: 24px;">
-            
-            <!-- Busiest Day -->
-            <div class="kpi-card kpi-wash" style="background: linear-gradient(135deg, #1e3a8a, #1d4ed8);">
-                <div class="kpi-content">
-                    <h3>Dia de Maior Movimento</h3>
-                    <div class="kpi-value" id="kpi-busiest-day-val" style="font-size: 20px;">--/--</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-calendar-check" style="color: #fff !important;"></i>
-                        <span id="kpi-busiest-day-sub">Carregando...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="fas fa-fire"></i>
-                </div>
-            </div>
-
-            <!-- Least Busy Day -->
-            <div class="kpi-card kpi-dry" style="background: linear-gradient(135deg, #475569, #64748b);">
-                <div class="kpi-content">
-                    <h3>Dia de Menor Movimento</h3>
-                    <div class="kpi-value" id="kpi-quietest-day-val" style="font-size: 20px;">--/--</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-calendar-minus" style="color: #fff !important;"></i>
-                        <span id="kpi-quietest-day-sub">Carregando...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon" style="background: rgba(255,255,255,0.12);">
-                    <i class="fas fa-snowflake"></i>
-                </div>
-            </div>
-
-            <!-- Busiest Hour -->
-            <div class="kpi-card kpi-projection" style="background: linear-gradient(135deg, #1e3a8a, #0ea5e9);">
-                <div class="kpi-content">
-                    <h3>Horário de Maior Uso</h3>
-                    <div class="kpi-value" id="kpi-busiest-hour-val" style="font-size: 20px;">--:--</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-clock" style="color: #fff !important;"></i>
-                        <span id="kpi-busiest-hour-sub">Carregando...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-            </div>
-
-            <!-- Least Busy Hour -->
-            <div class="kpi-card kpi-revenue" style="background: linear-gradient(135deg, #475569, #64748b);">
-                <div class="kpi-content">
-                    <h3>Horário de Menor Uso</h3>
-                    <div class="kpi-value" id="kpi-quietest-hour-val" style="font-size: 20px;">--:--</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-moon" style="color: #fff !important;"></i>
-                        <span id="kpi-quietest-hour-sub">Carregando...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon" style="background: rgba(255,255,255,0.12);">
-                    <i class="fas fa-bed"></i>
-                </div>
-            </div>
-
-            <!-- Best Day of Week -->
-            <div class="kpi-card kpi-wash" style="background: linear-gradient(135deg, #1e3a8a, #0ea5e9);">
-                <div class="kpi-content">
-                    <h3>Melhor Dia da Semana (Média)</h3>
-                    <div class="kpi-value" id="kpi-best-dow-val" style="font-size: 20px;">--</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-crown" style="color: #fff !important;"></i>
-                        <span id="kpi-best-dow-sub">Carregando...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon">
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-
-            <!-- Worst Day of Week -->
-            <div class="kpi-card kpi-dry" style="background: linear-gradient(135deg, #475569, #64748b);">
-                <div class="kpi-content">
-                    <h3>Pior Dia da Semana (Média)</h3>
-                    <div class="kpi-value" id="kpi-worst-dow-val" style="font-size: 20px;">--</div>
-                    <div class="kpi-subtext">
-                        <i class="fas fa-circle-down" style="color: #fff !important;"></i>
-                        <span id="kpi-worst-dow-sub">Carregando...</span>
-                    </div>
-                </div>
-                <div class="kpi-icon" style="background: rgba(255,255,255,0.12);">
-                    <i class="fas fa-triangle-exclamation"></i>
-                </div>
-            </div>
-            
-        </section>
-
-        <!-- Main Dashboard Content -->
-        <section class="dashboard-grid">
-            
-            <!-- Left Side: Daily Cycles Chart -->
-            <div class="card-panel">
-                <div class="card-header">
-                    <h2><i class="fas fa-chart-area"></i> Ciclos por Dia (Lavagem + Secagem)</h2>
-                    <div class="card-actions" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <span id="average-cycles-badge" style="background: rgba(37, 99, 235, 0.1); color: var(--color-wash); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px;">Média: 0,0 ciclos/dia</span>
-                        <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Junho 2026</span>
-                    </div>
-                </div>
-                <div id="chart-cycles-daily"></div>
-            </div>
-            
-            <!-- Right Side: Liquid Reservoirs -->
-            <div class="card-panel">
-                <div class="card-header">
-                    <h2><i class="fas fa-flask"></i> Reservatórios de Insumos</h2>
-                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Capacidade 20L</span>
-                </div>
-                
-                <div class="reservoir-container">
-                    
-                    <!-- Detergent Tank -->
-                    <div class="reservoir-tank-wrapper tank-detergente-wrapper">
-                        <span class="reservoir-title">Detergente</span>
-                        <div class="tank-cylinder">
-                            <div class="tank-liquid tank-detergente" id="det-liquid">
-                                <div class="tank-wave"></div>
-                            </div>
-                        </div>
-                        <div class="tank-volume" id="det-vol">20,00 L</div>
-                        <div class="tank-percent" id="det-pct">100%</div>
-                        <div class="tank-low-warning" id="det-warning" style="display: none;"></div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;" id="det-consumed-info">Consumido: 0 L</div>
-                    </div>
-                    
-                    <!-- Fabric Softener Tank -->
-                    <div class="reservoir-tank-wrapper tank-amaciante-wrapper">
-                        <span class="reservoir-title">Amaciante</span>
-                        <div class="tank-cylinder">
-                            <div class="tank-liquid tank-amaciante" id="ama-liquid">
-                                <div class="tank-wave"></div>
-                            </div>
-                        </div>
-                        <div class="tank-volume" id="ama-vol">20,00 L</div>
-                        <div class="tank-percent" id="ama-pct">100%</div>
-                        <div class="tank-low-warning" id="ama-warning" style="display: none;"></div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;" id="ama-consumed-info">Consumido: 0 L</div>
-                    </div>
-                    
-                </div>
-            </div>
-            
-        </section>
-
-        <!-- Charts Grid Row (Busiest Hours & Payment Methods Share) -->
-        <section class="charts-grid-row">
-            
-            <!-- Peak Times Chart (Busiest Hours) -->
-            <div class="card-panel chart-panel-large">
-                <div class="card-header">
-                    <h2><i class="fas fa-clock"></i> Horários de Pico (Peak-Times)</h2>
-                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Distribuição por Hora</span>
-                </div>
-                <div id="chart-peak-times"></div>
-            </div>
-            
-            <!-- Payments Share & Occupancy Rate -->
-            <div class="card-panel chart-panel-small">
-                <div class="card-header">
-                    <h2><i class="fas fa-credit-card"></i> Divisão de Pagamento</h2>
-                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">TEF vs PIX</span>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; height: 100%;">
-                    
-                    <!-- Donut Chart -->
-                    <div>
-                        <div id="chart-payment-methods"></div>
-                    </div>
-                    
-                    <!-- Detailed list of brands -->
-                    <div style="max-height: 280px; overflow-y: auto; padding-right: 4px;">
-                        <h4 style="font-size: 12px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">Bandeiras / Operadores</h4>
-                        <div id="bandeiras-list">
-                            <!-- Populated dynamically -->
-                        </div>
-                    </div>
-                    
-                </div>
-                
-                <!-- Machine Occupancy Stats -->
-                <div style="margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 14px;">
-                    <h4 style="font-family: var(--font-heading); font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px;">Taxa de Ocupação Real</h4>
-                    <div class="perf-grid">
-                        
-                        <!-- Lavadora Occupancy -->
-                        <div class="perf-item perf-item-wash">
-                            <div class="perf-info">
-                                <span class="perf-title">Lavadora (Ciclo: 30 min • Máx: 16/dia)</span>
-                                <span class="perf-percent" id="occupancy-wash-pct">0%</span>
-                            </div>
-                            <div class="perf-bar-bg">
-                                <div class="perf-bar-fill" id="occupancy-wash-fill" style="--perf-fill: 0%;"></div>
-                            </div>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="occupancy-wash-details">0 lavagens</div>
-                        </div>
-
-                        <!-- Secadora Occupancy -->
-                        <div class="perf-item perf-item-dry">
-                            <div class="perf-info">
-                                <span class="perf-title">Secadora (Ciclo: 45 min • Máx: 14/dia)</span>
-                                <span class="perf-percent" id="occupancy-dry-pct">0%</span>
-                            </div>
-                            <div class="perf-bar-bg">
-                                <div class="perf-bar-fill" id="occupancy-dry-fill" style="--perf-fill: 0%;"></div>
-                            </div>
-                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;" id="occupancy-dry-details">0 secagens</div>
-                        </div>
-                        
-                    </div>
-                </div>
-                
-            </div>
-            
-        </section>
-
-        <!-- Detailed Transactions List -->
-        <section class="table-panel">
-            <div class="table-header-bar">
-                <div class="card-header" style="margin-bottom: 0; padding: 0;">
-                    <h2><i class="fas fa-list-check"></i> Histórico de Ciclos e Transações</h2>
-                </div>
-                
-                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                    <!-- Excel Export Button -->
-                    <button id="btn-export-excel" class="btn-range" style="background: var(--color-revenue); color: white; border-color: transparent; height: 38px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: opacity 0.2s;">
-                        <i class="fas fa-file-excel"></i> Exportar Excel
-                    </button>
-                    <!-- Search -->
-                    <div class="search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="table-search" class="search-input" placeholder="Buscar por código, operadora, tipo...">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th data-sort="data">Data e Hora <i class="fas fa-sort-down"></i></th>
-                            <th data-sort="tipoMaquina">Máquina / Operação <i class="fas fa-sort"></i></th>
-                            <th data-sort="pagamento">Pagamento <i class="fas fa-sort"></i></th>
-                            <th data-sort="bandeira">Bandeira / Operadora <i class="fas fa-sort"></i></th>
-                            <th data-sort="total">Valor Venda <i class="fas fa-sort"></i></th>
-                            <th data-sort="autorizacao">Cód. Autorização <i class="fas fa-sort"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-transactions">
-                        <!-- Populated dynamically -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination Controls -->
-            <div class="pagination-container">
-                <div class="pagination-info" id="pagination-info-text">Exibindo 0 a 0 de 0 transações</div>
-                <div class="pagination-buttons" id="pagination-buttons-wrapper">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-        </section>
-        
+  <div class="field">
+    <label for="inp-email">E-mail</label>
+    <div class="input-wrap">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="inp-email" placeholder="seu@email.com" autocomplete="email"
+        oninput="onEmailInput()">
     </div>
+  </div>
 
-    <!-- ApexCharts Library -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    
-    <!-- Embedded Data -->
-    <script src="data.js"></script>
-    
-    <!-- Application Logic -->
-    <script src="app.js"></script>
+  <div class="field" id="field-senha">
+    <label for="inp-senha">Senha</label>
+    <div class="input-wrap">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="inp-senha" placeholder="••••••••" class="has-eye"
+        autocomplete="current-password">
+      <i class="fas fa-eye eye" id="eye-btn" onclick="toggleSenha()"></i>
+    </div>
+  </div>
+
+  <div class="err" id="msg-err"></div>
+
+  <button class="btn" id="btn-entrar" onclick="entrar()">
+    <span id="btn-txt">Entrar</span>
+  </button>
+</div>
+
+<script>
+// ── Usuários autorizados ───────────────────────────────
+// dominio: qualquer @lavai.com.vc entra sem senha
+// senha: emails específicos com senha
+var DOMINIO_LIVRE = 'lavai.com.vc';
+var USUARIOS_SENHA = {
+  'anrose@ahi.com.br':  'Lavai&ahi29032107',
+  'pkoyama@ahi.com.br': 'Lavai&ahi29032107'
+};
+var SESSAO_HORAS = 24;
+
+// ── Estado ─────────────────────────────────────────────
+var precisaSenha = false;
+
+function onEmailInput() {
+  var email = document.getElementById('inp-email').value.trim().toLowerCase();
+  var fieldSenha = document.getElementById('field-senha');
+  var errEl = document.getElementById('msg-err');
+  errEl.className = 'err';
+
+  // Mostra campo senha só para emails com senha cadastrada
+  if (USUARIOS_SENHA.hasOwnProperty(email)) {
+    fieldSenha.style.display = 'block';
+    precisaSenha = true;
+  } else {
+    fieldSenha.style.display = 'none';
+    precisaSenha = false;
+  }
+}
+
+function toggleSenha() {
+  var inp = document.getElementById('inp-senha');
+  var eye = document.getElementById('eye-btn');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    eye.className = 'fas fa-eye-slash eye';
+  } else {
+    inp.type = 'password';
+    eye.className = 'fas fa-eye eye';
+  }
+}
+
+function erro(msg) {
+  var el = document.getElementById('msg-err');
+  el.textContent = msg;
+  el.className = 'err show';
+  // Shake nos inputs
+  document.getElementById('inp-email').classList.add('shake');
+  setTimeout(function() {
+    document.getElementById('inp-email').classList.remove('shake');
+  }, 300);
+}
+
+function entrar() {
+  var email = document.getElementById('inp-email').value.trim().toLowerCase();
+  var senha = document.getElementById('inp-senha').value;
+  var errEl = document.getElementById('msg-err');
+  errEl.className = 'err';
+
+  // Validação básica
+  if (!email || !email.includes('@')) {
+    erro('Digite um e-mail válido.');
+    return;
+  }
+
+  // Verifica acesso
+  var autorizado = false;
+
+  // 1. Email com senha cadastrada
+  if (USUARIOS_SENHA.hasOwnProperty(email)) {
+    if (!senha) {
+      erro('Digite a senha para este e-mail.');
+      document.getElementById('inp-senha').focus();
+      return;
+    }
+    if (senha !== USUARIOS_SENHA[email]) {
+      erro('Senha incorreta.');
+      document.getElementById('inp-senha').value = '';
+      document.getElementById('inp-senha').focus();
+      return;
+    }
+    autorizado = true;
+  }
+  // 2. Domínio livre @lavai.com.vc
+  else if (email.endsWith('@' + DOMINIO_LIVRE)) {
+    autorizado = true;
+  }
+  // 3. Não autorizado
+  else {
+    erro('E-mail não autorizado para este painel.');
+    return;
+  }
+
+  if (autorizado) {
+    // Salva sessão
+    localStorage.setItem('lavai_condo_session', JSON.stringify({
+      email: email,
+      exp: Date.now() + SESSAO_HORAS * 60 * 60 * 1000
+    }));
+    // Redireciona
+    var btn = document.getElementById('btn-entrar');
+    btn.disabled = true;
+    document.getElementById('btn-txt').innerHTML = '<div class="spinner"></div>';
+    window.location.replace('/condo/dashboard');
+  }
+}
+
+// ── Verifica sessão ativa ──────────────────────────────
+(function() {
+  try {
+    var s = JSON.parse(localStorage.getItem('lavai_condo_session') || '{}');
+    if (s.exp && Date.now() < s.exp) {
+      window.location.replace('/condo/dashboard');
+    }
+  } catch(e) {}
+})();
+
+// ── Enter nos inputs ───────────────────────────────────
+document.getElementById('inp-email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    if (precisaSenha) document.getElementById('inp-senha').focus();
+    else entrar();
+  }
+});
+document.getElementById('inp-senha').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') entrar();
+});
+</script>
 </body>
 </html>
