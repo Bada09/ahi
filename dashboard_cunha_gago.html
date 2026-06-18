@@ -3,77 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard LAVAÍ & AHI — Cunha Gago</title>
+<title>Dashboard LAVAí — Cunha Gago</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <style>
 /* ── Reset & Tokens ─────────────────────────────── */
 :root{
-  --bg:#f8f9fc; --bg2:#ffffff; --bg3:#f1f4f9; --bg4:#e8edf5;
+  --bg:#0a0f1e; --bg2:#111827; --bg3:#1c2437; --bg4:#243049;
   --cyan:#2563eb; --teal:#0ea5e9; --green:#10b981; --amber:#f59e0b;
   --red:#ef4444; --purple:#8b5cf6;
   --color-wash:#2563eb; --color-dry:#0ea5e9; --color-revenue:#10b981;
-  --text:#1e293b; --text-muted:#64748b; --border:#e2e8f0;
+  --text:#e2e8f0; --text-muted:#64748b; --border:#1e293b;
   --font-heading:'Inter',system-ui,sans-serif;
   --font-body:'Inter',system-ui,sans-serif;
   --font-mono:'JetBrains Mono','Fira Code',monospace;
   --r:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{min-height:100%;background:#f8f9fc}
-body{
-  min-height:100%;
-  background:transparent;
-  color:var(--text);
-  font-family:var(--font-body);
-  font-size:14px;
-  /* Gradiente azul nas 4 bordas via box-shadow no body */
-  box-shadow:none;
-}
-body::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  background:
-    /* borda esquerda */
-    linear-gradient(to right,  #1d4ed8, transparent 40px) left/40px 100% no-repeat,
-    /* borda direita */
-    linear-gradient(to left,   #1d4ed8, transparent 40px) right/40px 100% no-repeat,
-    /* borda topo */
-    linear-gradient(to bottom, #1d4ed8, transparent 60px) top/100% 60px no-repeat,
-    /* borda fundo */
-    linear-gradient(to top,    #1d4ed8, transparent 40px) bottom/100% 40px no-repeat;
-  opacity:.18;
-}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px}
 a{color:inherit;text-decoration:none}
 button{cursor:pointer;font-family:var(--font-body)}
 select,input{font-family:var(--font-body)}
 
 /* ── Loader ─────────────────────────────────────── */
-.loader-overlay{position:fixed;inset:0;background:#f8f9fc;z-index:999;
+.loader-overlay{position:fixed;inset:0;background:var(--bg);z-index:999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
   transition:opacity .4s}
 .loader-overlay.hidden{opacity:0;pointer-events:none}
-.loader-spinner{width:44px;height:44px;border:3px solid #e2e8f0;border-top-color:var(--cyan);
+.loader-spinner{width:44px;height:44px;border:3px solid var(--bg3);border-top-color:var(--cyan);
   border-radius:50%;animation:spin .7s linear infinite}
-.loader-text{font-size:13px;color:#64748b}
+.loader-text{font-size:13px;color:var(--text-muted)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── App Container ──────────────────────────────── */
-.app-container{max-width:1400px;margin:0 auto;padding:20px 24px 40px;position:relative;z-index:1}
+.app-container{max-width:1400px;margin:0 auto;padding:20px 24px 40px}
 
 /* ── Header ─────────────────────────────────────── */
-header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
+header{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
   padding:20px 24px;margin-bottom:20px;display:flex;align-items:flex-start;
-  justify-content:space-between;gap:20px;flex-wrap:wrap;
-  box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  justify-content:space-between;gap:20px;flex-wrap:wrap}
 .brand-section{display:flex;align-items:center;gap:14px}
 .brand-logo{width:44px;height:44px;background:linear-gradient(135deg,var(--cyan),var(--teal));
   border-radius:10px;display:flex;align-items:center;justify-content:center;
   font-size:20px;color:#fff;flex-shrink:0}
-.brand-info h1{font-size:20px;font-weight:700;color:#1e293b;letter-spacing:-.3px}
+.brand-info h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px}
 .brand-info p{font-size:12px;color:var(--text-muted);margin-top:3px}
 .brand-links{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .brand-link{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
@@ -87,11 +60,11 @@ header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
 .filter-group{display:flex;flex-direction:column;gap:4px}
 .filter-group label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:600}
 .filter-group select,.filter-group input[type=date]{
-  background:#fff;border:1px solid var(--border);border-radius:7px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:7px;
   padding:7px 10px;color:var(--text);font-size:12px;outline:none;min-width:130px}
 .filter-group select:focus,.filter-group input[type=date]:focus{border-color:var(--cyan)}
 .quick-ranges{display:flex;gap:6px;align-items:flex-end}
-.btn-range{background:#fff;border:1px solid var(--border);color:var(--text-muted);
+.btn-range{background:var(--bg3);border:1px solid var(--border);color:var(--text-muted);
   padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;transition:all .15s}
 .btn-range:hover{color:var(--text);border-color:var(--text-muted)}
 .btn-range.active{color:#fff;background:var(--cyan);border-color:var(--cyan)}
@@ -99,18 +72,19 @@ header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
 /* ── Section labels ─────────────────────────────── */
 .section-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);
   font-weight:700;margin-bottom:10px;padding-left:2px}
+
 /* ── KPI Grid ───────────────────────────────────── */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:14px}
-.kpi-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
   padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;
-  position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  position:relative;overflow:hidden}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .kpi-revenue::before{background:linear-gradient(90deg,var(--green),#34d399)}
 .kpi-projection::before{background:linear-gradient(90deg,var(--amber),#fbbf24)}
 .kpi-wash::before{background:linear-gradient(90deg,var(--cyan),var(--teal))}
 .kpi-dry::before{background:linear-gradient(90deg,var(--teal),var(--purple))}
 .kpi-content h3{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:600;margin-bottom:6px}
-.kpi-value{font-size:24px;font-weight:700;font-family:var(--font-mono);color:#1e293b;letter-spacing:-.5px;line-height:1}
+.kpi-value{font-size:24px;font-weight:700;font-family:var(--font-mono);color:#fff;letter-spacing:-.5px;line-height:1}
 .kpi-subtext{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-top:6px}
 .kpi-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;
   font-size:18px;flex-shrink:0}
@@ -140,9 +114,9 @@ header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
 @media(max-width:1000px){.charts-grid-row{grid-template-columns:1fr}}
 
 /* ── Card Panel ─────────────────────────────────── */
-.card-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.card-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px}
 .card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.card-header h2{font-size:14px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px}
+.card-header h2{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
 .card-header h2 i{color:var(--text-muted);font-size:13px}
 
 /* ── Reservoir ──────────────────────────────────── */
@@ -150,7 +124,7 @@ header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
 .reservoir-tank-wrapper{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1}
 .reservoir-title{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
 .tank-cylinder{width:80px;height:200px;border:2px solid var(--border);border-radius:10px;
-  overflow:hidden;background:#f1f4f9;position:relative}
+  overflow:hidden;background:var(--bg3);position:relative}
 .tank-liquid{position:absolute;bottom:0;left:0;right:0;transition:height .8s ease;border-radius:0 0 8px 8px}
 .tank-detergente{background:linear-gradient(180deg,rgba(37,99,235,.5),rgba(37,99,235,.9))}
 .tank-amaciante{background:linear-gradient(180deg,rgba(139,92,246,.5),rgba(139,92,246,.9))}
@@ -169,36 +143,36 @@ header{background:#fff;border:1px solid var(--border);border-radius:var(--r);
 .perf-info{display:flex;justify-content:space-between;align-items:center}
 .perf-title{font-size:11px;color:var(--text-muted)}
 .perf-percent{font-size:13px;font-weight:700;font-family:var(--font-mono);color:#fff}
-.perf-bar-bg{height:6px;background:#e8edf5;border-radius:3px;overflow:hidden}
+.perf-bar-bg{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
 .perf-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;width:var(--perf-fill)}
 .perf-item-wash .perf-bar-fill{background:var(--cyan)}
 .perf-item-dry .perf-bar-fill{background:var(--teal)}
 
 /* ── Bandeiras list ─────────────────────────────── */
-.bandeiras-list{display:flex;flex-direction:column;gap:7px;min-width:0}
-.band-item{display:flex;align-items:center;gap:8px;font-size:12px;min-width:0}
+.bandeiras-list{display:flex;flex-direction:column;gap:7px}
+.band-item{display:flex;align-items:center;gap:8px;font-size:12px}
 .band-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.band-name{color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.band-val{color:var(--text-muted);font-family:var(--font-mono);font-size:11px;flex-shrink:0}
+.band-name{color:var(--text);flex:1}
+.band-val{color:var(--text-muted);font-family:var(--font-mono);font-size:11px}
 
 /* ── Table ──────────────────────────────────────── */
-.table-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.table-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
 .table-header-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .search-wrapper{position:relative;display:flex;align-items:center}
 .search-wrapper i{position:absolute;left:10px;color:var(--text-muted);font-size:12px}
-.search-input{background:#f1f4f9;border:1px solid var(--border);border-radius:7px;
+.search-input{background:var(--bg3);border:1px solid var(--border);border-radius:7px;
   padding:8px 10px 8px 30px;color:var(--text);font-size:12px;outline:none;width:220px}
 .search-input:focus{border-color:var(--cyan)}
 .table-responsive{overflow-x:auto;max-height:420px;border-radius:8px;border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse}
-thead th{position:sticky;top:0;background:#f1f4f9;padding:9px 12px;text-align:left;
+thead th{position:sticky;top:0;background:var(--bg3);padding:9px 12px;text-align:left;
   font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;
   white-space:nowrap;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
 thead th:hover{color:var(--text)}
 tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
-tbody tr:hover{background:#f8faff}
+tbody tr:hover{background:var(--bg3)}
 tbody tr:last-child{border-bottom:none}
-tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
+tbody td{padding:9px 12px;font-size:12px;white-space:nowrap}
 .td-mono{font-family:var(--font-mono);color:var(--teal)}
 .badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:600}
 .badge-debit{background:rgba(37,99,235,.12);color:var(--cyan)}
@@ -211,7 +185,7 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
 .pagination-container{display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:8px}
 .pagination-info{font-size:11px;color:var(--text-muted)}
 .pagination-buttons{display:flex;gap:4px}
-.pg-btn{background:#fff;border:1px solid var(--border);border-radius:5px;color:var(--text-muted);
+.pg-btn{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text-muted);
   min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px}
 .pg-btn:hover{color:var(--text)}
 .pg-btn.active{color:#fff;background:var(--cyan);border-color:var(--cyan)}
@@ -223,14 +197,13 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
 .btn-export:hover{opacity:.85}
 
 /* ── ApexCharts overrides ───────────────────────── */
-.apexcharts-tooltip{background:#fff!important;border-color:var(--border)!important;color:var(--text)!important}
-.apexcharts-tooltip-title{background:#f1f4f9!important;border-color:var(--border)!important;color:var(--text)!important}
-.apexcharts-text{fill:#475569!important}
+.apexcharts-tooltip{background:var(--bg3)!important;border-color:var(--border)!important;color:var(--text)!important}
+.apexcharts-tooltip-title{background:var(--bg4)!important;border-color:var(--border)!important;color:var(--text)!important}
 
 /* ── Scrollbar ──────────────────────────────────── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
 </style>
 </head>
 <body>
@@ -249,7 +222,10 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
       <div class="brand-info">
         <h1>Dashboard LAVAí</h1>
         <p>Unidade Cunha Gago • Dashboard de Operações</p>
-
+        <div class="brand-links">
+          <a class="brand-link brand-link-gray" href="#"><i class="fas fa-home"></i> Portal de Acesso</a>
+          <a class="brand-link brand-link-blue" href="#"><i class="fas fa-network-wired"></i> Visão Geral (PDVs)</a>
+        </div>
       </div>
     </div>
     <div class="filter-bar">
@@ -371,7 +347,7 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
   </div>
 
   <!-- CHARTS ROW 2 -->
-  <div style="margin-bottom:16px">
+  <div class="charts-grid-row">
     <div class="card-panel">
       <div class="card-header">
         <h2><i class="fas fa-clock"></i> Horários de Pico (Peak Times)</h2>
@@ -379,13 +355,41 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
       </div>
       <div id="chart-peak-times"></div>
     </div>
+    <div class="card-panel">
+      <div class="card-header">
+        <h2><i class="fas fa-credit-card"></i> Divisão de Pagamento</h2>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase">TEF vs PIX</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+        <div id="chart-payment-methods"></div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-weight:700">Bandeiras</div>
+          <div class="bandeiras-list" id="bandeiras-list"></div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px">Taxa de Ocupação Real</div>
+        <div class="perf-grid">
+          <div class="perf-item perf-item-wash">
+            <div class="perf-info"><span class="perf-title">Lavadora (30 min · Máx: 16/dia)</span><span class="perf-percent" id="occ-wash-pct">0%</span></div>
+            <div class="perf-bar-bg"><div class="perf-bar-fill" id="occ-wash-fill" style="--perf-fill:0%;width:0%"></div></div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="occ-wash-detail">0 lavagens</div>
+          </div>
+          <div class="perf-item perf-item-dry">
+            <div class="perf-info"><span class="perf-title">Secadora (45 min · Máx: 14/dia)</span><span class="perf-percent" id="occ-dry-pct">0%</span></div>
+            <div class="perf-bar-bg"><div class="perf-bar-fill" id="occ-dry-fill" style="--perf-fill:0%;width:0%"></div></div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="occ-dry-detail">0 secagens</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- TABLE -->
   <div class="table-panel">
     <div class="table-header-bar">
       <div class="card-header" style="margin-bottom:0;padding:0">
-        <h2 style="color:#1e293b"><i class="fas fa-list-check"></i> Histórico de Ciclos e Transações</h2>
+        <h2><i class="fas fa-list-check"></i> Histórico de Ciclos e Transações</h2>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button class="btn-export" onclick="exportCSV()"><i class="fas fa-file-csv"></i> Exportar CSV</button>
@@ -422,42 +426,21 @@ tbody td{padding:9px 12px;font-size:12px;white-space:nowrap;color:var(--text)}
 // ══════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════
-// CONFIG — substitua a URL abaixo após criar o Apps Script
-// ══════════════════════════════════════════════════════
 const CSV_URL_ORIGINAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ6-Y8FO-Zspn95dDGPARIHVexMJ5foVWU4vsIuq_OdpAr0k6JY2OwrS2VNfygSkJ6dT1aXaPx6uuq/pub?gid=40793617&single=true&output=csv';
-
-// ► Cole aqui a URL do Apps Script após publicar (instrução abaixo)
-const APPS_SCRIPT_URL = '';
-
+const CSV_URL = '/proxy?url='https://script.google.com/macros/s/AKfycbwDl_1vTN9HIUY3J8uEtdMbBarD7ZribPEhGdM26ISTnp1BCcC7IXBXoydwepGj2bkk/exec';
 const MACHINE_NAME = '40# AHI - Cunha Gago';
 
 // Insumos: ml consumido por ciclo de lavagem
-const DET_ML_PER_WASH = 30;
-const AMA_ML_PER_WASH = 20;
+const DET_ML_PER_WASH = 30;   // detergente
+const AMA_ML_PER_WASH = 20;   // amaciante
 const TANK_CAPACITY_L = 20;
 
-// 7727 = Lavadora ("7727 - LAVA - 1") | 17381 = Secadora ("17381 - SECA - 1")
-// Varre todas as colunas da linha para encontrar o identificador
-const WASH_ID = '7727';
-const DRY_ID  = '17381';
-
-function isMaqWash(r){
-  return r.some(v => (v||'').includes(WASH_ID));
-}
-function isMaqDry(r){
-  return r.some(v => (v||'').includes(DRY_ID));
-}
-
-// Formata M/D/YYYY → DD/MM/YYYY
-function fmtDate(s){
-  if(!s) return '–';
-  const p=s.split('/');
-  if(p.length===3) return `${String(p[1]).padStart(2,'0')}/${String(p[0]).padStart(2,'0')}/${p[2]}`;
-  return s;
-}
+// Produtos que identificam lavagem vs secagem (col Produtos = índice 5)
+const WASH_PRODUCTS = ['7000','7004','7009','7038'];
+const DRY_PRODUCTS  = ['7001','7003','7005','8871','8872','7727','17381'];
 
 // col indices
-const C = {maquina:1,pagamento:4,produto:5,total:9,data:11,hora:12,tipo:16,rede:17,bandeira:18,auth:15,nlogico:13,matricula:21};
+const C = {maquina:1,pagamento:4,produto:5,total:9,data:11,hora:12,tipo:16,rede:17,bandeira:18,auth:15};
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -501,60 +484,22 @@ function parseDate(s){
 function fmtBRL(n){return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
 function fmtN(n,d=2){return n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});}
 
-async function fetchWithFallback(){
-  const enc = encodeURIComponent(CSV_URL_ORIGINAL);
-
-  // 1º — Apps Script próprio (mais confiável, sem CORS)
-  if(APPS_SCRIPT_URL){
-    try{
-      const r=await fetch(APPS_SCRIPT_URL+'?nc='+Date.now());
-      if(r.ok){ const t=await r.text(); if(t.includes(',')) return t; }
-    }catch(e){}
-  }
-
-  // 2º — allorigins
-  try{
-    const r=await fetch(`https://api.allorigins.win/raw?url=${enc}&nc=${Date.now()}`);
-    if(r.ok){ const t=await r.text(); if(t.includes(',')) return t; }
-  }catch(e){}
-
-  // 3º — corsproxy.io
-  try{
-    const r=await fetch(`https://corsproxy.io/?${enc}`);
-    if(r.ok){ const t=await r.text(); if(t.includes(',')) return t; }
-  }catch(e){}
-
-  // 4º — direto (funciona se a planilha for pública)
-  try{
-    const r=await fetch(CSV_URL_ORIGINAL+'&nc='+Date.now());
-    if(r.ok){ const t=await r.text(); if(t.includes(',')) return t; }
-  }catch(e){}
-
-  throw new Error('Não foi possível carregar os dados. Configure o Apps Script para garantir o acesso.');
-}
-
 async function loadData(){
   try{
-    const txt=await fetchWithFallback();
+    const res=await fetch(CSV_URL+'&_t='+Date.now());
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const txt=await res.text();
     const rows=parseCSV(txt);
+    // Filter to this machine only
     allRows=rows.filter(r=>r.length>10 && r[C.maquina]===MACHINE_NAME);
     buildMonthSelect();
     applyFilter();
     document.getElementById('loader').classList.add('hidden');
   }catch(e){
-    document.getElementById('loader').innerHTML=`
-      <div style="max-width:420px;text-align:center;padding:40px 20px">
-        <i class="fas fa-triangle-exclamation" style="font-size:40px;color:#ef4444;margin-bottom:16px;display:block"></i>
-        <strong style="color:#1e293b;font-size:15px">Erro ao carregar dados</strong>
-        <p style="color:#64748b;font-size:13px;margin-top:10px;line-height:1.7">${e.message}</p>
-        <div style="background:#f1f4f9;border-radius:10px;padding:16px;margin-top:16px;text-align:left;font-size:12px;color:#475569;line-height:1.8">
-          <strong>Para resolver, crie o Apps Script:</strong><br>
-          1. Acesse <a href="https://script.google.com" target="_blank" style="color:#2563eb">script.google.com</a><br>
-          2. Novo projeto → cole o código do arquivo <code>.gs</code><br>
-          3. Implantar → App da Web → Qualquer pessoa<br>
-          4. Cole a URL no campo <code>APPS_SCRIPT_URL</code> do HTML
-        </div>
-      </div>`;
+    document.getElementById('loader').innerHTML=`<div style="color:#ef4444;font-size:14px;text-align:center;padding:20px">
+      <i class="fas fa-triangle-exclamation" style="font-size:32px;margin-bottom:12px;display:block"></i>
+      Erro ao carregar dados: ${e.message}<br><br>
+      <small>Verifique se o servidor HTTP está ativo (<code>python -m http.server 8080</code>)</small></div>`;
   }
 }
 
@@ -653,8 +598,8 @@ function renderAll(){
 // ══════════════════════════════════════════════════════
 function renderKPIs(){
   const total=filtered.reduce((s,r)=>s+toNum(r[C.total]),0);
-  const washCycles=filtered.filter(r=>isMaqWash(r)).length;
-  const dryCycles =filtered.filter(r=>isMaqDry(r)).length;
+  const washCycles=filtered.filter(r=>WASH_PRODUCTS.some(p=>r[C.produto]===p)).length;
+  const dryCycles =filtered.filter(r=>!WASH_PRODUCTS.some(p=>r[C.produto]===p)).length;
 
   document.getElementById('kpi-revenue-val').textContent=fmtBRL(total);
   document.getElementById('kpi-wash-val').textContent=washCycles.toLocaleString('pt-BR');
@@ -690,9 +635,9 @@ function renderInsights(){
   dayArr.sort((a,b)=>b[1].total-a[1].total);
   const busiest=dayArr[0], quietest=dayArr[dayArr.length-1];
   const bDate=busiest[1].date, qDate=quietest[1].date;
-  document.getElementById('kpi-busiest-day-val').textContent=bDate?`${String(bDate.getDate()).padStart(2,'0')}/${String(bDate.getMonth()+1).padStart(2,'0')}`:'--';
+  document.getElementById('kpi-busiest-day-val').textContent=bDate?`${bDate.getDate()}/${bDate.getMonth()+1}`:'--';
   document.getElementById('kpi-busiest-day-sub').textContent=`${fmtBRL(busiest[1].total)} · ${busiest[1].count} transações`;
-  document.getElementById('kpi-quietest-day-val').textContent=qDate?`${String(qDate.getDate()).padStart(2,'0')}/${String(qDate.getMonth()+1).padStart(2,'0')}`:'--';
+  document.getElementById('kpi-quietest-day-val').textContent=qDate?`${qDate.getDate()}/${qDate.getMonth()+1}`:'--';
   document.getElementById('kpi-quietest-day-sub').textContent=`${fmtBRL(quietest[1].total)} · ${quietest[1].count} transações`;
 
   // by hour
@@ -726,28 +671,27 @@ function renderChartCycles(){
   filtered.forEach(r=>{
     const d=r[C.data]; if(!d) return;
     if(!byDay[d]) byDay[d]={wash:0,dry:0};
-    if(isMaqWash(r)) byDay[d].wash++;
+    if(WASH_PRODUCTS.some(p=>r[C.produto]===p)) byDay[d].wash++;
     else byDay[d].dry++;
   });
   const days=Object.keys(byDay).sort((a,b)=>{const da=parseDate(a),db=parseDate(b);return da-db;});
   const washData=days.map(d=>byDay[d].wash);
   const dryData =days.map(d=>byDay[d].dry);
-  const labels  =days.map(d=>{const p=parseDate(d);return p?`${String(p.getDate()).padStart(2,'0')}/${String(p.getMonth()+1).padStart(2,'0')}`:d;});
+  const labels  =days.map(d=>{const p=parseDate(d);return p?`${p.getDate()}/${p.getMonth()+1}`:d;});
   const total=washData.reduce((s,v)=>s+v,0)+dryData.reduce((s,v)=>s+v,0);
   const avg=days.length?(total/days.length).toFixed(1):0;
   document.getElementById('average-cycles-badge').textContent=`Média: ${avg} ciclos/dia`;
 
   const opts={
     series:[{name:'Lavagem',data:washData},{name:'Secagem',data:dryData}],
-    theme:{mode:'light'},
     chart:{type:'bar',stacked:true,height:260,toolbar:{show:false},background:'transparent',
       animations:{enabled:true,speed:600}},
     colors:['#2563eb','#0ea5e9'],
     xaxis:{categories:labels,labels:{style:{colors:'#64748b',fontSize:'11px'},rotate:-45},
-      axisBorder:{color:'#e2e8f0'},axisTicks:{color:'#e2e8f0'}},
+      axisBorder:{color:'#1e293b'},axisTicks:{color:'#1e293b'}},
     yaxis:{labels:{style:{colors:'#64748b',fontSize:'11px'}}},
-    grid:{borderColor:'#e8edf5',strokeDashArray:4},
-    legend:{labels:{colors:'#475569'},fontSize:'12px'},
+    grid:{borderColor:'#1e293b',strokeDashArray:4},
+    legend:{labels:{colors:'#e2e8f0'},fontSize:'12px'},
     plotOptions:{bar:{borderRadius:3,columnWidth:'65%'}},
     tooltip:{theme:'dark'},
     dataLabels:{enabled:false},
@@ -773,12 +717,12 @@ function renderChartPeak(){
     colors:['#0ea5e9'],
     xaxis:{categories:labels,labels:{style:{colors:'#64748b',fontSize:'10px'}}},
     yaxis:{labels:{style:{colors:'#64748b',fontSize:'11px'}}},
-    grid:{borderColor:'#e8edf5',strokeDashArray:4},
+    grid:{borderColor:'#1e293b',strokeDashArray:4},
     plotOptions:{bar:{borderRadius:3,columnWidth:'70%',
       colors:{ranges:[{from:Math.max(...byHour),to:Math.max(...byHour),color:'#2563eb'}]}}},
     dataLabels:{enabled:false},
-    tooltip:{theme:'light'},
-    theme:{mode:'light'},
+    tooltip:{theme:'dark'},
+    theme:{mode:'dark'},
   };
 
   if(chartPeak){ chartPeak.updateOptions(opts); }
@@ -801,10 +745,10 @@ function renderChartPayment(){
     colors,
     legend:{show:false},
     dataLabels:{enabled:false},
-    plotOptions:{pie:{donut:{size:'65%',labels:{show:true,total:{show:true,label:'Total',color:'#1e293b',
+    plotOptions:{pie:{donut:{size:'65%',labels:{show:true,total:{show:true,label:'Total',color:'#e2e8f0',
       formatter:()=>filtered.length.toLocaleString('pt-BR')}}}}},
-    tooltip:{theme:'light'},
-    theme:{mode:'light'},
+    tooltip:{theme:'dark'},
+    theme:{mode:'dark'},
   };
 
   if(chartPayment){ chartPayment.updateOptions(opts); }
@@ -827,7 +771,7 @@ function renderChartPayment(){
 // RESERVOIRS
 // ══════════════════════════════════════════════════════
 function renderReservoirs(){
-  const washCycles=filtered.filter(r=>isMaqWash(r)).length;
+  const washCycles=filtered.filter(r=>WASH_PRODUCTS.some(p=>r[C.produto]===p)).length;
   const detConsumed=washCycles*DET_ML_PER_WASH/1000;
   const amaConsumed=washCycles*AMA_ML_PER_WASH/1000;
   const detLeft=Math.max(0,TANK_CAPACITY_L-detConsumed);
@@ -858,7 +802,7 @@ function renderOccupancy(){
   filtered.forEach(r=>{
     const d=r[C.data]; if(!d) return;
     if(!byDay[d]) byDay[d]={wash:0,dry:0};
-    if(isMaqWash(r)) byDay[d].wash++;
+    if(WASH_PRODUCTS.some(p=>r[C.produto]===p)) byDay[d].wash++;
     else byDay[d].dry++;
   });
   const days=Object.keys(byDay);
@@ -905,7 +849,7 @@ function paintTable(){
   if(tablePage>=pages) tablePage=pages-1;
   const pageRows=tableRows.slice(tablePage*TABLE_PS,(tablePage+1)*TABLE_PS);
 
-  const isWash=r=>isMaqWash(r);
+  const isWash=r=>WASH_PRODUCTS.some(p=>r[C.produto]===p);
   const tipoBadge=t=>{
     if(!t) return '';
     const l=t.toLowerCase();
@@ -915,7 +859,7 @@ function paintTable(){
   };
 
   document.getElementById('tbody-transactions').innerHTML=pageRows.map(r=>`<tr>
-    <td>${fmtDate(r[C.data])} ${r[C.hora]||''}</td>
+    <td>${r[C.data]||'–'} ${r[C.hora]||''}</td>
     <td>${isWash(r)?'<span class="badge badge-wash">🫧 Lavagem</span>':'<span class="badge badge-dry">💨 Secagem</span>'}</td>
     <td>${tipoBadge(r[C.tipo])}</td>
     <td>${r[C.bandeira]||(r[C.tipo]==='Pix'?'PIX':'–')}</td>
